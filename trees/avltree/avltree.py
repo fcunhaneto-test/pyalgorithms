@@ -66,10 +66,8 @@ class AVLTree:
         current = node.parent
         fb1, fb2 = 0, 0
         while current:
-            # print('current:', current.key, 'previous:', previous.key, )
             fb1 = current.left.height - current.right.height
             fb2 = previous.left.height - previous.right.height
-            # print('fb', fb1, fb2)
             if fb1 >= 2 and fb2 >= 0:
                 self.rotate_right(current)
                 current.height -= 2
@@ -233,8 +231,44 @@ class AVLTree:
         return node
 
     def remove(self, value):
-        pass
+        node = self.search(value)
 
+        if node.left == self.leaf and node.right == self.leaf:
+            self._remove_if_leaf(node)
+        elif (node.left == self.leaf) ^ (node.right == self.leaf):
+            self._remove_if_one_child(node)
+
+    def _remove_if_leaf(self, node):
+        parent = node.parent
+        if parent.left == node:
+            parent.left = self.leaf
+        else:
+            parent.right = self.leaf
+
+        node = None
+        del node
+
+        self.calculate_height(parent)
+        self.fix_violation(parent)
+
+    def _remove_if_one_child(self, node):
+        parent = node.parent
+        if parent.left == node:
+            if node.right == self.leaf:
+                parent.left = node.left
+            else:
+                parent.left = node.right
+        else:
+            if node.right == self.leaf:
+                parent.right = node.left
+            else:
+                parent.right = node.right
+
+        node = None
+        del node
+
+        self.calculate_height(parent)
+        self.fix_violation(parent)
 
 if __name__ == '__main__':
     bt = AVLTree()
@@ -244,13 +278,15 @@ if __name__ == '__main__':
     bt.insert(2)
     bt.insert(14)
     bt.insert(1)
-    bt.insert(7)
+    # bt.insert(7)
     bt.insert(15)
-    bt.insert(5)
-    bt.insert(8)
+    bt.insert(16)
+    # bt.insert(8)
+    # bt.insert(4)
     bt.walk_in_order()
+    # bt.remove(15)
+    # bt.remove(5)
     print('***********************************************')
-    bt.insert(4)
     bt.walk_in_order()
     print('***********************************************')
     # bt.remove(12)
