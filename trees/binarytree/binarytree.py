@@ -1,8 +1,6 @@
 #!/home/francisco/Projects/Pycharm/pyalgorithms/venv/bin/python3
 # -*- coding: utf-8 -*-
 
-from trees import handletrees
-
 
 class Node:
     def __init__(self, key):
@@ -241,6 +239,7 @@ class BinaryTree:
                 self.root = successor
 
 if __name__ == '__main__':
+    from trees import handletrees
     handletrees.handle_trees()
     # bt = BinaryTree()
     # print('node\tparent\tleft\tright\theight\tfb')
