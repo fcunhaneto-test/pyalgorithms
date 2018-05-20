@@ -13,7 +13,7 @@ from trees.avltree import avltree
 import uteis
 
 def handle_trees(bt=None):
-    # uteis.cls()
+    uteis.cls()
     if not bt:
         print('***************************')
         print('1 - Create binary tree')
@@ -40,7 +40,7 @@ def handle_trees(bt=None):
             input('Press enter to continue.')
             handle_trees()
 
-    # cls.cls()
+    uteis.cls()
     while op != 0:
         print('Options:')
         print('***************************')
@@ -122,11 +122,4 @@ def handle_trees(bt=None):
 
 
 if __name__ == '__main__':
-    import sys
-    import os
-
-    dir_module = os.path.dirname(os.path.abspath(__file__))
-    dir_module, _ = dir_module.rsplit('/', 1)
-    sys.path.extend([dir_module])
-
     handle_trees()
