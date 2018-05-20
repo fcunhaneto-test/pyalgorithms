@@ -25,7 +25,7 @@ pygame.display.set_caption("Draw Tree")
 # Used to manage how fast the screen updates
 clock = pygame.time.Clock()
 
-tree_height = 2
+tree_height = 3
 leaf_num = 2**tree_height
 x_center = int(leaf_num / 2)
 division = 2*x_center + 1
@@ -34,36 +34,31 @@ division_space_center = int(division_space / 2)
 loop1 = tree_height - 1
 loop2_fact = 2
 
-tree = []
-nodes = []
 root_center = (x_center * division_space) + division_space_center
 nodes = [(root_center, RADIUS)]
-tree.append(nodes)
-print(tree)
+
 y_space = 100
 y = y_space
 
 if tree_height > 1:
     n1_center = int(x_center/2) * division_space + division_space_center
     n2_center = (3 * int(x_center/2)) * division_space + division_space_center
-    nodes = [(n1_center, y), (n2_center, y)]
-    tree.append(nodes)
+    nodes.append((n1_center, y))
+    nodes.append((n2_center, y))
+
 
 if tree_height > 2:
     for n in range(1, loop1):
+        print(n)
         y += y_space
         space_div = 2**n
         space = space = int(x_center / space_div)
         sum_space = int(space / 2)
         loop2 = loop2_fact**(1+n)
-        node = []
         for m in range(0, loop2):
             x = sum_space * division_space + division_space_center
             nodes.append((x, y))
-            node.append((x, y))
             sum_space += space
-
-        tree.append(node)
 
     leaf_nodes = []
     y += y_space
@@ -71,10 +66,7 @@ if tree_height > 2:
         x = i * division_space
         nodes.append((x, y))
 
-    tree.append(nodes)
-
 while True:
-
     for event in pygame.event.get():
         if event.type == QUIT:
             pygame.quit()
@@ -82,10 +74,9 @@ while True:
 
         screen.fill(WHITE)
 
-        for lines in tree:
-            for line in lines:
-                x, y = line
-                pygame.draw.circle(screen, RED, (x, y), RADIUS, 2)
+        for point in nodes:
+            x, y = point
+            pygame.draw.circle(screen, RED, (x, y), RADIUS, 2)
 
         # Limit to 60 frames per second
         clock.tick(30)
