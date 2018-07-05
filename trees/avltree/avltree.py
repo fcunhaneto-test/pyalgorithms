@@ -141,7 +141,7 @@ class AVLTree:
             if node.parent:
 
                 print('{0}\t{1}\t{2}\t{3}\t{4}\t{5}'.format(node.key, node.parent.key, node.left.key, node.right.key,
-                                                       node.height, fb))
+                                                            node.height, fb))
             else:
                 print('{0}\t{1}\t{2}\t{3}\t{4}\t{5}'.format(node.key, None, node.left.key, node.right.key,
                                                             node.height, fb))
@@ -157,7 +157,7 @@ class AVLTree:
             self.walk_pos_order(node.right)
             if node.parent:
                 print('{0}\t{1}\t{2}\t{3}\t{4}'.format(node.key, node.parent.key, node.left.key, node.right.key,
-                                                  node.height, ))
+                                                       node.height, ))
             else:
                 print('{0}\t{1}\t{2}\t{3}\t{4}'.format(node.key, None, node.left.key, node.right.key, node.height))
 
@@ -270,22 +270,23 @@ class AVLTree:
         self.calculate_height(parent)
         self.fix_violation(parent)
 
+
 if __name__ == '__main__':
-    from trees import handletrees
-    handletrees.handle_trees()
-    # bt = AVLTree()
-    # print('node\tparent\tleft\tright\theight\tfb')
-    # print('***********************************************')
-    # bt.insert(11)
-    # bt.insert(2)
-    # bt.insert(14)
-    # bt.insert(1)
-    # # bt.insert(7)
-    # bt.insert(15)
-    # bt.insert(16)
-    # bt.insert(8)
-    # bt.insert(4)
-    # bt.walk_in_order()
+    # from trees import handletrees
+    # handletrees.handle_trees()
+    bt = AVLTree()
+    print('node\tparent\tleft\tright\theight\tfb')
+    print('***********************************************')
+    bt.insert(11)
+    bt.insert(2)
+    bt.insert(14)
+    bt.insert(1)
+    # bt.insert(7)
+    bt.insert(15)
+    bt.insert(5)
+    bt.insert(8)
+    bt.insert(4)
+    bt.walk_in_order()
     # bt.remove(15)
     # bt.remove(5)
     # print('***********************************************')
@@ -294,4 +295,3 @@ if __name__ == '__main__':
     # bt.remove(12)
     # bt.walk_in_order()
     # print('***********************************************')
-

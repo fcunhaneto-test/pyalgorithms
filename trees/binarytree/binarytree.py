@@ -232,26 +232,26 @@ class BinaryTree:
                 successor.left = node.left
                 successor.right = node.right
 
-
                 node.left.parent = successor
                 node.right.parent = successor
                 successor.parent = None
                 self.root = successor
 
+
 if __name__ == '__main__':
-    from trees import handletrees
-    handletrees.handle_trees()
-    # bt = BinaryTree()
-    # print('node\tparent\tleft\tright\theight\tfb')
-    # print('***********************************************')
-    # bt.insert(50)
-    # bt.insert(25)
-    # bt.insert(15)
-    # bt.insert(30)
-    # bt.insert(10)
-    # bt.insert(14)
-    # bt.insert(29)
-    # bt.insert(40)
+    # from trees import handletrees
+    # handletrees.handle_trees()
+    bt = BinaryTree()
+    print('node\tparent\tleft\tright\theight\tfb')
+    print('***********************************************')
+    bt.insert(50)
+    bt.insert(25)
+    bt.insert(15)
+    bt.insert(30)
+    bt.insert(10)
+    bt.insert(14)
+    bt.insert(29)
+    bt.insert(40)
     # # bt.insert(80)
     # # bt.insert(75)
     # # bt.insert(80)
@@ -263,5 +263,5 @@ if __name__ == '__main__':
     # bt.walk_in_order()
     # print('***********************************************')
     # bt.remove(50)
-    # bt.walk_in_order()
+    bt.walk_in_order()
     # print('***********************************************')

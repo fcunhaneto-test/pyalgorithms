@@ -4,6 +4,7 @@
 
 import sys
 import os
+
 dir_module = os.path.dirname(os.path.abspath(__file__))
 dir_module, _ = dir_module.rsplit('/', 1)
 sys.path.extend([dir_module])
@@ -12,8 +13,9 @@ from trees.binarytree import binarytree
 from trees.avltree import avltree
 import uteis
 
+
 def handle_trees(bt=None):
-    uteis.cls()
+    uteis.clear()
     if not bt:
         print('***************************')
         print('1 - Create binary tree')
@@ -40,7 +42,7 @@ def handle_trees(bt=None):
             input('Press enter to continue.')
             handle_trees()
 
-    uteis.cls()
+    uteis.clear()
     while op != 0:
         print('Options:')
         print('***************************')
@@ -62,7 +64,7 @@ def handle_trees(bt=None):
             input('Press enter to return for options.\n')
             handle_trees()
 
-        uteis.cls()
+        uteis.clear()
 
         if op == 1:
             print('Enter the nodes (enter none to end):')
