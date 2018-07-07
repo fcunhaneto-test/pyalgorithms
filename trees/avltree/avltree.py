@@ -49,56 +49,56 @@ class AVLTree:
             else:
                 parent.right = node
 
-            self.calculate_height(node)
-            self.fix_violation(node)
+            self._calculate_height(node)
+            self._fix_violation(node)
 
         return True
 
-    def calculate_height(self, node):
+    def _calculate_height(self, node):
         current = node
 
         while current:
             current.height = max(current.left.height, current.right.height) + 1
             current = current.parent
 
-    def fix_violation(self, node):
+    def _fix_violation(self, node):
         previous = node
         current = node.parent
-        fb1, fb2 = 0, 0
+
         while current:
             fb1 = current.left.height - current.right.height
             fb2 = previous.left.height - previous.right.height
             if fb1 >= 2 and fb2 >= 0:
-                self.rotate_right(current)
+                self._rotate_right(current)
                 current.height -= 2
-                self.calculate_height(current)
+                self._calculate_height(current)
                 break
             if fb1 <= -2 and fb2 <= 0:
-                self.rotate_left(current)
+                self._rotate_left(current)
                 current.height -= 2
-                self.calculate_height(current)
+                self._calculate_height(current)
                 break
             if fb1 >= +2 and fb2 <= 0:
-                self.rotate_left(previous)
+                self._rotate_left(previous)
                 previous.height -= 2
-                self.calculate_height(previous)
-                self.rotate_right(current)
+                self._calculate_height(previous)
+                self._rotate_right(current)
                 current.height -= 2
-                self.calculate_height(current)
+                self._calculate_height(current)
                 break
             if fb1 <= -2 and fb2 >= 0:
-                self.rotate_right(previous)
+                self._rotate_right(previous)
                 previous.height -= 2
-                self.calculate_height(previous)
-                self.rotate_left(current)
+                self._calculate_height(previous)
+                self._rotate_left(current)
                 current.height -= 2
-                self.calculate_height(current)
+                self._calculate_height(current)
                 break
             previous = current
             current = current.parent
 
-    def rotate_left(self, x):
-        y = x.right  # define y
+    def _rotate_left(self, x):
+        y = x.right
         x.right = y.left  # x right now igual y left
         y.left.parent = x  # y left now is x left
         y.parent = x.parent  # y parent is x parent
@@ -113,7 +113,7 @@ class AVLTree:
         y.left = x  # y left now is x
         x.parent = y  # x parent now is y
 
-    def rotate_right(self, x):
+    def _rotate_right(self, x):
         y = x.left
         x.left = y.right
         y.right.parent = x
@@ -231,44 +231,125 @@ class AVLTree:
         return node
 
     def remove(self, value):
+        """
+        Remove node where key is equal of given value.
+        :param value: numeric
+        """
+        print(value)
         node = self.search(value)
 
-        if node.left == self.leaf and node.right == self.leaf:
-            self._remove_if_leaf(node)
+        if node == self.root:
+            return self._remove_root()
+        elif node.left == self.leaf and node.right == self.leaf:
+            return self._remove_if_leaf(node)
         elif (node.left == self.leaf) ^ (node.right == self.leaf):
-            self._remove_if_one_child(node)
+            return self._remove_if_one_child(node)
+        else:
+            return self._remove_if_two_children(node)
 
     def _remove_if_leaf(self, node):
+        remove_key = node.key
         parent = node.parent
         if parent.left == node:
             parent.left = self.leaf
         else:
             parent.right = self.leaf
 
-        node = None
-        del node
+        self._calculate_height(parent)
+        self._fix_violation(parent)
 
-        self.calculate_height(parent)
-        self.fix_violation(parent)
+        del node
 
     def _remove_if_one_child(self, node):
-        parent = node.parent
-        if parent.left == node:
+        remove_key = node.key
+        if node.parent.left == node:
             if node.right == self.leaf:
-                parent.left = node.left
+                node.parent.left = node.left
             else:
-                parent.left = node.right
+                node.parent.left = node.right
         else:
             if node.right == self.leaf:
-                parent.right = node.left
+                node.parent.right = node.left
             else:
-                parent.right = node.right
+                node.parent.right = node.right
 
-        node = None
+        node.left.parent = node.parent
+        node.right.parent = node.parent
+
+        self._calculate_height(node.parent)
+        self._fix_violation(node.parent)
+
         del node
 
-        self.calculate_height(parent)
-        self.fix_violation(parent)
+    def _remove_if_two_children(self, node):
+        remove_key = node.key
+        successor = self.successor(node.key)
+
+        if successor == node.right:
+            if node == node.parent.left:
+                node.parent.left = successor
+            else:
+                node.parent.right = successor
+
+            successor.parent = node.parent
+            successor.left = node.left
+            successor.left.parent = successor
+        else:
+            if node == node.parent.left:
+                node.parent.left = successor
+            else:
+                node.parent.right = successor
+
+            successor.parent.left = successor.right
+            successor.left = node.left
+            successor.right = node.right
+
+            node.right.parent = successor
+            node.left.parent = successor
+            successor.parent = node.parent
+
+        self._calculate_height(node.parent)
+        self._fix_violation(node.parent)
+
+        del node
+
+        return remove_key, successor.key
+
+    def _remove_root(self):
+        remove_key = self.root.key
+        successor = None
+        if self.root.left == self.leaf and self.root.right == self.leaf:
+            self.root = None
+        elif (self.root.left == self.leaf) ^ (self.root.right == self.leaf):
+            if self.root.left != self.leaf:
+                self.root = self.root.left
+            else:
+                self.root = self.root.right
+
+            self.root.parent = None
+        else:
+            successor = self.successor(self.root.key)
+            if successor == self.root.right:
+
+                successor.parent = None
+                successor.left = self.root.left
+                self.root.left.parent = successor
+                self.root = successor
+            else:
+                if successor.right:
+                    successor.right.parent = successor.parent
+
+                successor.parent.left = successor.right
+                successor.left = self.root.left
+                successor.right = self.root.right
+
+                self.root.left.parent = successor
+                self.root.right.parent = successor
+                successor.parent = None
+                self.root = successor
+
+        self._calculate_height(self.root)
+        self._fix_violation(self.root)
 
 
 if __name__ == '__main__':
@@ -277,21 +358,24 @@ if __name__ == '__main__':
     bt = AVLTree()
     print('node\tparent\tleft\tright\theight\tfb')
     print('***********************************************')
-    bt.insert(11)
-    bt.insert(2)
-    bt.insert(14)
-    bt.insert(1)
-    # bt.insert(7)
-    bt.insert(15)
-    bt.insert(5)
-    bt.insert(8)
-    bt.insert(4)
+    bt.insert(44)
+    bt.insert(17)
+    bt.insert(78)
+    bt.insert(32)
+    bt.insert(50)
+    bt.insert(88)
+    bt.insert(48)
+    bt.insert(62)
+    bt.insert(84)
+    bt.insert(92)
+    bt.insert(80)
+    bt.insert(82)
     bt.walk_in_order()
-    # bt.remove(15)
-    # bt.remove(5)
-    # print('***********************************************')
-    # bt.walk_in_order()
-    # print('***********************************************')
-    # bt.remove(12)
-    # bt.walk_in_order()
-    # print('***********************************************')
+    print('***********************************************')
+    bt.remove(78)
+    print('remove 78')
+    print('node\tparent\tleft\tright\theight\tfb')
+    print('***********************************************')
+    bt.walk_in_order()
+    print('***********************************************')
+

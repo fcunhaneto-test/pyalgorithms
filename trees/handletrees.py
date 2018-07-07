@@ -1,4 +1,4 @@
-#!/home/francisco/Projects/pycharm/pyalgorithms/venv/bin/python3
+#!/home/francisco/Projects/Pycharm/pyalgorithms/venv/bin/python3
 # -*- coding: utf-8 -*-
 
 
@@ -11,6 +11,7 @@ sys.path.extend([dir_module])
 
 from trees.binarytree import binarytree
 from trees.avltree import avltree
+from trees.rbtree import rbtest
 import uteis
 
 
@@ -20,6 +21,7 @@ def handle_trees(bt=None):
         print('***************************')
         print('1 - Create binary tree')
         print('2 - Create avl tree')
+        print('3 - Create red-black tree')
         print('0 - Exit')
         print('***************************')
 
@@ -35,6 +37,8 @@ def handle_trees(bt=None):
             bt = binarytree.BinaryTree()
         elif op == 2:
             bt = avltree.AVLTree()
+        elif op == 3:
+            bt = rbtest.RBTree()
         elif op == 0:
             exit(0)
         else:

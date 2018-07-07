@@ -1,4 +1,4 @@
-#!/home/francisco/.pyvenv/mypython3/bin/python3
+#!/home/francisco/Projects/Pycharm/pyalgorithms/venv/bin/python3
 # -*- coding: utf-8 -*-
 
 
