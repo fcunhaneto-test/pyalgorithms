@@ -2,46 +2,37 @@
 # -*- coding: utf-8 -*-
 
 
-#!/home/francisco/Projects/Pycharm/pyalgorithms/venv/bin/python3
-# -*- coding: utf-8 -*-
-
-BLACK = 1
-RED = 0
+from trees.node import Node
 
 
-class RBNode:
-    def __init__(self, value):
-        self.key = value
-        self.left = None
-        self.right = None
-        self.parent = None
-        self.color = BLACK
-
-
-class RBTree:
+class AVLTree:
     def __init__(self):
         self.root = None
-        self.leaf = RBNode(None)
-        self.leaf.color = BLACK
-        self.node_list =[]
+        self.leaf = Node(None)
+        self.leaf.height = -1
 
     def insert(self, key):
-        node = RBNode(key)
+        node = Node(key)
         node.left = self.leaf
         node.right = self.leaf
+        node.height = 0
 
         if not self.root:
             self.root = node
         else:
             current = self.root
             parent = current
-            while current != self.leaf:
+
+            while current:
+                if current == self.leaf:
+                    break
+
                 parent = current
                 if node.key < current.key:
                     current = current.left
                 elif node.key > current.key:
                     current = current.right
-                else:
+                elif node.key == current.key:
                     return False
 
             node.parent = parent
@@ -51,47 +42,56 @@ class RBTree:
             else:
                 parent.right = node
 
-            node.color = RED
-
+            self._calculate_height(node)
             self._fix_violation(node)
 
-    def _fix_violation(self, z):
-        while z != self.root and z.parent.color == RED:
-            if z.parent == z.parent.parent.left:  # verifies if parent of z is on left or right of his grandfather
-                y = z.parent.parent.right  # y is uncle of z
-                if y.color == RED:
-                    z.parent.color = BLACK
-                    y.color = BLACK
-                    z.parent.parent.color = RED
-                    z = z.parent.parent
-                else:
-                    if z == z.parent.right:
-                        z = z.parent
-                        self._rotate_left(z)
+        return True
 
-                    z.parent.color = BLACK
-                    z.parent.parent.color = RED
-                    self._rotate_right(z.parent.parent)
-            else:
-                y = z.parent.parent.left  # y é igual ao tio de z
-                if y.color == RED:
-                    z.parent.color = BLACK
-                    y.color = BLACK
-                    z.parent.parent.color = RED
-                    z = z.parent.parent
-                else:
-                    if z == z.parent.left:
-                        z = z.parent
-                        self._rotate_right(z)
+    def _calculate_height(self, node):
+        current = node
 
-                    z.parent.color = BLACK
-                    z.parent.parent.color = RED
-                    self._rotate_left(z.parent.parent)
+        while current:
+            current.height = max(current.left.height, current.right.height) + 1
+            current = current.parent
 
-        self.root.color = BLACK
+    def _fix_violation(self, node):
+        previous = node
+        current = node.parent
+
+        while current:
+            fb1 = current.left.height - current.right.height
+            fb2 = previous.left.height - previous.right.height
+            if fb1 >= 2 and fb2 >= 0:
+                self._rotate_right(current)
+                current.height -= 2
+                self._calculate_height(current)
+                break
+            if fb1 <= -2 and fb2 <= 0:
+                self._rotate_left(current)
+                current.height -= 2
+                self._calculate_height(current)
+                break
+            if fb1 >= +2 and fb2 <= 0:
+                self._rotate_left(previous)
+                previous.height -= 2
+                self._calculate_height(previous)
+                self._rotate_right(current)
+                current.height -= 2
+                self._calculate_height(current)
+                break
+            if fb1 <= -2 and fb2 >= 0:
+                self._rotate_right(previous)
+                previous.height -= 2
+                self._calculate_height(previous)
+                self._rotate_left(current)
+                current.height -= 2
+                self._calculate_height(current)
+                break
+            previous = current
+            current = current.parent
 
     def _rotate_left(self, x):
-        y = x.right  # define y
+        y = x.right
         x.right = y.left  # x right now igual y left
         y.left.parent = x  # y left now is x left
         y.parent = x.parent  # y parent is x parent
@@ -130,13 +130,14 @@ class RBTree:
 
             self.walk_in_order(node.left)
 
+            fb = node.left.height - node.right.height
             if node.parent:
 
-                print('{0}\t{1}\t{2}\t{3}\t{4}'.format(node.key, node.parent.key, node.left.key, node.right.key,
-                                                            node.color))
+                print('{0}\t{1}\t{2}\t{3}\t{4}\t{5}'.format(node.key, node.parent.key, node.left.key, node.right.key,
+                                                            node.height, fb))
             else:
-                print('{0}\t{1}\t{2}\t{3}\t{4}'.format(node.key, None, node.left.key, node.right.key,
-                                                            node.color))
+                print('{0}\t{1}\t{2}\t{3}\t{4}\t{5}'.format(node.key, None, node.left.key, node.right.key,
+                                                            node.height, fb))
 
             self.walk_in_order(node.right)
 
@@ -147,14 +148,11 @@ class RBTree:
         if node != self.leaf:
 
             self.walk_pos_order(node.right)
-
             if node.parent:
-
                 print('{0}\t{1}\t{2}\t{3}\t{4}'.format(node.key, node.parent.key, node.left.key, node.right.key,
-                                                            node.color))
+                                                       node.height, ))
             else:
-                print('{0}\t{1}\t{2}\t{3}\t{4}'.format(node.key, None, node.left.key, node.right.key,
-                                                            node.color))
+                print('{0}\t{1}\t{2}\t{3}\t{4}'.format(node.key, None, node.left.key, node.right.key, node.height))
 
             self.walk_pos_order(node.left)
 
@@ -243,15 +241,20 @@ class RBTree:
             return self._remove_if_two_children(node)
 
     def _remove_if_leaf(self, node):
+        remove_key = node.key
         parent = node.parent
         if parent.left == node:
             parent.left = self.leaf
         else:
             parent.right = self.leaf
 
+        self._calculate_height(parent)
+        self._fix_violation(parent)
+
         del node
 
     def _remove_if_one_child(self, node):
+        remove_key = node.key
         if node.parent.left == node:
             if node.right == self.leaf:
                 node.parent.left = node.left
@@ -265,6 +268,9 @@ class RBTree:
 
         node.left.parent = node.parent
         node.right.parent = node.parent
+
+        self._calculate_height(node.parent)
+        self._fix_violation(node.parent)
 
         del node
 
@@ -294,6 +300,9 @@ class RBTree:
             node.right.parent = successor
             node.left.parent = successor
             successor.parent = node.parent
+
+        self._calculate_height(node.parent)
+        self._fix_violation(node.parent)
 
         del node
 
@@ -332,30 +341,34 @@ class RBTree:
                 successor.parent = None
                 self.root = successor
 
+        self._calculate_height(self.root)
+        self._fix_violation(self.root)
+
 
 if __name__ == '__main__':
     # from trees import handletrees
     # handletrees.handle_trees()
-    bt = RBTree()
-    print('node\tparent\tleft\tright\tcolor')
+    bt = AVLTree()
+    print('node\tparent\tleft\tright\theight\tfb')
     print('***********************************************')
-    # bt.insert(11)
-    # bt.insert(2)
-    # bt.insert(14)
-    # bt.insert(1)
-    # bt.insert(7)
-    # bt.insert(15)
-    # bt.insert(5)
-    # bt.insert(8)
-    # bt.insert(4)
-    # bt.walk_in_order()
-
-    bt.insert(2)
-    bt.insert(1)
-    bt.insert(4)
-    bt.insert(5)
-    bt.insert(9)
-    bt.insert(3)
-    bt.insert(6)
-    bt.insert(7)
+    bt.insert(44)
+    bt.insert(17)
+    bt.insert(78)
+    bt.insert(32)
+    bt.insert(50)
+    bt.insert(88)
+    bt.insert(48)
+    bt.insert(62)
+    bt.insert(84)
+    bt.insert(92)
+    bt.insert(80)
+    bt.insert(82)
     bt.walk_in_order()
+    print('***********************************************')
+    bt.remove(78)
+    print('remove 78')
+    print('node\tparent\tleft\tright\theight\tfb')
+    print('***********************************************')
+    bt.walk_in_order()
+    print('***********************************************')
+

@@ -9,13 +9,14 @@ dir_module = os.path.dirname(os.path.abspath(__file__))
 dir_module, _ = dir_module.rsplit('/', 1)
 sys.path.extend([dir_module])
 
-from trees.binarytree import binarytree
-from trees.avltree import avltree
-from trees.rbtree import rbtest
+from trees import binarytree, avltree, rbtree
 import uteis
+
+tree_op = None
 
 
 def handle_trees(bt=None):
+    global tree_op
     uteis.clear()
     if not bt:
         print('***************************')
@@ -25,21 +26,21 @@ def handle_trees(bt=None):
         print('0 - Exit')
         print('***************************')
 
-        op = input('Enter the option: ')
+        tree_op = input('Enter the option: ')
         try:
-            op = int(op)
+            tree_op = int(tree_op)
         except TypeError:
             print('Invalid option.')
             input('Press enter to return for options.\n')
             handle_trees()
 
-        if op == 1:
+        if tree_op == 1:
             bt = binarytree.BinaryTree()
-        elif op == 2:
+        elif tree_op == 2:
             bt = avltree.AVLTree()
-        elif op == 3:
-            bt = rbtest.RBTree()
-        elif op == 0:
+        elif tree_op == 3:
+            bt = rbtree.RBTree()
+        elif tree_op == 0:
             exit(0)
         else:
             print('Invalid option.')
@@ -47,6 +48,7 @@ def handle_trees(bt=None):
             handle_trees()
 
     uteis.clear()
+    op = 1
     while op != 0:
         print('Options:')
         print('***************************')
@@ -79,18 +81,40 @@ def handle_trees(bt=None):
                 bt.insert(key)
                 key = input('node: ')
             print('*********************************************\n')
-        elif op == 2:
+        elif op == 2 or op == 3:
             print('Walk In Order:')
-            print('node\tparent\tleft\tright\theight\tfb')
-            print('***********************************************')
-            bt.walk_in_order()
-            print('***********************************************\n')
+            if tree_op == 1:
+                print('node\tparent\tleft\tright\theight')
+                print('***********************************************')
+                bt.walk_in_order()
+                print('***********************************************\n')
+            elif tree_op == 2:
+                print('node\tparent\tleft\tright\theight\tfb')
+                print('***********************************************')
+                bt.walk_in_order()
+                print('***********************************************\n')
+            elif tree_op == 3:
+                print('node\tparent\tleft\tright\theight\tcolor')
+                print('***********************************************')
+                bt.walk_in_order()
+                print('***********************************************\n')
         elif op == 3:
-            print('Walk In Order:')
-            print('node\tparent\tleft\tright\theight\tfb')
-            print('***********************************************')
-            bt.walk_pos_order()
-            print('***********************************************\n')
+            print('Walk In Pos Order:')
+            if tree_op == 1:
+                print('node\tparent\tleft\tright\theight')
+                print('***********************************************')
+                bt.walk_pos_order()
+                print('***********************************************\n')
+            elif tree_op == 2:
+                print('node\tparent\tleft\tright\theight\tfb')
+                print('***********************************************')
+                bt.walk_pos_order()
+                print('***********************************************\n')
+            elif tree_op == 3:
+                print('node\tparent\tleft\tright\theight\tcolor')
+                print('***********************************************')
+                bt.walk_pos_order()
+                print('***********************************************\n')
         elif op == 4:
             print('***********************************************')
             key = int(input("To remove node enter it's key: "))
@@ -119,9 +143,8 @@ def handle_trees(bt=None):
                 print('*********************************************************')
         elif op == 7:
             del bt
-            handle_trees()
         elif op == 0:
-            return bt
+            sys.exit(0)
         else:
             print('Invalid option.')
             input('Press enter to return for options.\n')
