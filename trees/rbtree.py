@@ -6,11 +6,20 @@ from trees.node import Node
 BLACK = 1
 RED = 0
 
+
 class RBTree:
     def __init__(self):
+        """
+        Start the Red Black Tree class.
+        """
         self.root = None
 
     def insert(self, key):
+        """
+        Insert key value in Red Black Tree.
+        :param key:
+        :return:
+        """
         node = Node(key)
         node.left = Node(None)
         node.left.parent = node
@@ -48,6 +57,11 @@ class RBTree:
             self._fix_violation(node)
 
     def walk_in_order(self, node=None):
+        """
+        Traverses the sub-tree from the node given in ascending order and shows it on a table.
+        :param node:
+        :return:
+        """
         if not node:
             node = self.root
 
@@ -66,6 +80,11 @@ class RBTree:
             self.walk_in_order(node.right)
 
     def walk_pos_order(self, node=None):
+        """
+        Traverses the subtree from the given node in descending order and shows it in a table.
+        :param node:
+        :return:
+        """
         if not node:
             node = self.root
 
@@ -84,6 +103,11 @@ class RBTree:
             self.walk_pos_order(node.left)
 
     def search(self, value):
+        """
+        Find a node from the value of your key.
+        :param value:
+        :return:
+        """
         current = self.root
         while current and value != current.key:
             if not current.key:
@@ -97,6 +121,11 @@ class RBTree:
         return current
 
     def minimum(self, node=None):
+        """
+        Find a minimum key value in the subtree, starting at a given node.
+        :param node:
+        :return:
+        """
         if not node:
             node = self.root
 
@@ -106,6 +135,11 @@ class RBTree:
         return node
 
     def maximum(self, node=None):
+        """
+        Find a maximum key value in the subtree, starting at a given node.
+        :param node:
+        :return:
+        """
         if not node:
             node = self.root
 
@@ -115,6 +149,11 @@ class RBTree:
         return node
 
     def successor(self, value):
+        """
+        Find the node successor in the tree from his given key value.
+        :param value:
+        :return:
+        """
         current = self.search(value)
         if not current:
             return False
@@ -133,6 +172,11 @@ class RBTree:
         return node
 
     def predecessor(self, value):
+        """
+        Find the node predecessor in the tree from his given key value.
+        :param value:
+        :return:
+        """
         current = self.search(value)
         if not current:
             return False
@@ -167,6 +211,11 @@ class RBTree:
             return self._remove_if_two_children(node)
 
     def _remove_if_one_child(self, node):
+        """
+        Remove given node where node is a leaf or node have only one child.
+        :param node:
+        :return:
+        """
         remove_key = node.key
 
         color = node.color
@@ -198,6 +247,11 @@ class RBTree:
         return remove_key
 
     def _remove_if_two_children(self, node):
+        """
+        Remove given node where node has two children.
+        :param node:
+        :return:
+        """
         remove_key = node.key
         successor = self.successor(node.key)
         color = successor.color
@@ -242,6 +296,10 @@ class RBTree:
         return remove_key
 
     def _remove_root(self):
+        """
+        Remove given node if it is the root.
+        :return:
+        """
         if (not self.root.left.key) and (not self.root.right.key):
             self.root = None
             self.nodes_dict = {}
@@ -290,6 +348,11 @@ class RBTree:
             return remove_key
 
     def _remove_fix_violation(self, x):
+        """
+        Fix a violation of the Red and Black Tree when a black node is removed.
+        :param x: Node
+        :return:
+        """
         while x != self.root and x.color == BLACK:
             if x == x.parent.left:
                 w = x.parent.right
@@ -341,6 +404,11 @@ class RBTree:
         x.color = BLACK
 
     def _fix_violation(self, z):
+        """
+        Fix a violation of the Red and Black Tree that can be caused by the insertion of a node.
+        :param z: Node
+        :return:
+        """
         while z != self.root and z.parent.color == RED:
             if z.parent == z.parent.parent.left:  # verifies if parent of z is on left or right of his grandfather
                 y = z.parent.parent.right  # y is uncle of z
@@ -376,6 +444,11 @@ class RBTree:
         self.root.color = BLACK
 
     def _rotate_left(self, x):
+        """
+        Rotate left the given node.
+        :param x: Node
+        :return:
+        """
         y = x.right  # define y
         x.right = y.left  # x right now igual y left
         y.left.parent = x  # y left now is x left
@@ -398,6 +471,11 @@ class RBTree:
         self._recovery_height_add(x.left)
 
     def _rotate_right(self, x):
+        """
+        Rotate right the given node.
+        :param x: Node
+        :return:
+        """
         y = x.left
         x.left = y.right
         y.right.parent = x
@@ -420,7 +498,11 @@ class RBTree:
         self._recovery_height_add(x.right)
 
     def _recovery_height_sub(self, node=None):
-
+        """
+        Retrieves the height of the nodes changed by a remove.
+        :param node: Node
+        :return:
+        """
         if node.key:
             self._recovery_height_sub(node.left)
 

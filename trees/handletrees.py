@@ -13,41 +13,52 @@ from trees import binarytree, avltree, rbtree
 import uteis
 
 tree_op = None
+bt = None
 
-
-def handle_trees(bt=None):
+def handle_trees():
+    """
+    Function to create and manipulate Binary, AVL and Red Black trees.
+    :return:
+    """
     global tree_op
+    global bt
     uteis.clear()
-    if not bt:
-        print('***************************')
-        print('1 - Create binary tree')
-        print('2 - Create avl tree')
-        print('3 - Create red-black tree')
-        print('0 - Exit')
-        print('***************************')
 
-        tree_op = input('Enter the option: ')
-        try:
-            tree_op = int(tree_op)
-        except TypeError:
-            print('Invalid option.')
-            input('Press enter to return for options.\n')
-            handle_trees()
+    print('***************************')
+    print('1 - Create binary tree')
+    print('2 - Create avl tree')
+    print('3 - Create red-black tree')
+    print('0 - Exit')
+    print('***************************')
 
-        if tree_op == 1:
-            bt = binarytree.BinaryTree()
-        elif tree_op == 2:
-            bt = avltree.AVLTree()
-        elif tree_op == 3:
-            bt = rbtree.RBTree()
-        elif tree_op == 0:
-            exit(0)
-        else:
-            print('Invalid option.')
-            input('Press enter to continue.')
-            handle_trees()
+    tree_op = input('Enter the option: ')
+    try:
+        tree_op = int(tree_op)
+    except TypeError:
+        print('Invalid option.')
+        input('Press enter to return for options.\n')
+        handle_trees()
+
+    if tree_op == 1:
+        bt = binarytree.BinaryTree()
+    elif tree_op == 2:
+        bt = avltree.AVLTree()
+    elif tree_op == 3:
+        bt = rbtree.RBTree()
+    elif tree_op == 0:
+        exit(0)
+    else:
+        print('Invalid option.')
+        input('Press enter to continue.')
+        handle_trees()
 
     uteis.clear()
+    trees_options()
+
+
+def trees_options():
+    global tree_op
+    global bt
     op = 1
     while op != 0:
         print('Options:')
@@ -81,7 +92,7 @@ def handle_trees(bt=None):
                 bt.insert(key)
                 key = input('node: ')
             print('*********************************************\n')
-        elif op == 2 or op == 3:
+        elif op == 2:
             print('Walk In Order:')
             if tree_op == 1:
                 print('node\tparent\tleft\tright\theight')
@@ -143,6 +154,7 @@ def handle_trees(bt=None):
                 print('*********************************************************')
         elif op == 7:
             del bt
+            handle_trees()
         elif op == 0:
             sys.exit(0)
         else:

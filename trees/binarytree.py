@@ -6,10 +6,18 @@ from trees.node import Node
 
 class BinaryTree:
     def __init__(self):
+        """
+        Start the Binary Tree class.
+        """
         self.root = None
         self.leaf = Node(None)
 
     def insert(self, key):
+        """
+        Insert key value in Binary Tree.
+        :param key:
+        :return:
+        """
         node = Node(key)
         node.left = self.leaf
         node.right = self.leaf
@@ -38,72 +46,107 @@ class BinaryTree:
         return True
 
     def walk_in_order(self, node=None):
+        """
+        Traverses the sub-tree from the node given in ascending order and shows it on a table.
+        :param node:
+        :return:
+        """
         if not node:
             node = self.root
 
-        if node != self.leaf:
+        if node.key:
 
             self.walk_in_order(node.left)
+
             if node.parent:
-                print('{0}\t{1}\t{2}\t{3}'.format(node.key, node.parent.key, node.left.key, node.right.key))
+
+                print('{0}\t{1}\t{2}\t{3}\t{4}\t{5}'.format(node.key, node.parent.key, node.left.key, node.right.key,
+                                                            node.height, node.color))
             else:
-                print('{0}\t{1}\t{2}\t{3}'.format(node.key, None, node.left.key, node.right.key))
+                print('{0}\t{1}\t{2}\t{3}\t{4}\t{5}'.format(node.key, None, node.left.key, node.right.key, node.height,
+                                                            node.color))
+
             self.walk_in_order(node.right)
 
     def walk_pos_order(self, node=None):
+        """
+        Traverses the subtree from the given node in descending order and shows it in a table.
+        :param node:
+        :return:
+        """
         if not node:
             node = self.root
 
-        if node != self.leaf:
+        if node.key:
 
             self.walk_pos_order(node.right)
+
             if node.parent:
-                print('{0}\t{1}\t{2}\t{3}'.format(node.key, node.parent.key, node.left.key, node.right.key))
+
+                print('{0}\t{1}\t{2}\t{3}\t{4}\t{5}'.format(node.key, node.parent.key, node.left.key, node.right.key,
+                                                            node.height, node.color))
             else:
-                print('{0}\t{1}\t{2}\t{3}'.format(node.key, None, node.left.key, node.right.key))
+                print('{0}\t{1}\t{2}\t{3}\t{4}\t{5}'.format(node.key, None, node.left.key, node.right.key, node.height,
+                                                            node.color))
+
             self.walk_pos_order(node.left)
 
     def search(self, value):
+        """
+        Find a node from the value of your key.
+        :param value:
+        :return:
+        """
         current = self.root
-        if value == current.key:
-            return self.root
+        while current and value != current.key:
+            if not current.key:
+                return False
 
-        while value != current.key and current != self.leaf:
             if current.key > value:
                 current = current.left
             else:
                 current = current.right
 
-        if current == self.leaf:
-            return False
-
         return current
 
     def minimum(self, node=None):
+        """
+        Find a minimum key value in the subtree, starting at a given node.
+        :param node:
+        :return:
+        """
         if not node:
             node = self.root
 
-        while node != self.leaf:
-            mini = node
+        while node.left.key:
             node = node.left
 
-        return mini
+        return node
 
     def maximum(self, node=None):
+        """
+        Find a maximum key value in the subtree, starting at a given node.
+        :param node:
+        :return:
+        """
         if not node:
             node = self.root
 
-        while node != self.leaf:
-            maxi = node
+        while node.right.key:
             node = node.right
 
-        return maxi
+        return node
 
     def successor(self, value):
+        """
+        Find the node successor in the tree from his given key value.
+        :param value:
+        :return:
+        """
         current = self.search(value)
         if not current:
             return False
-        elif current.right != self.leaf:
+        elif current.right.key:
             node = self.minimum(current.right)
             return node
 
@@ -118,10 +161,15 @@ class BinaryTree:
         return node
 
     def predecessor(self, value):
+        """
+        Find the node predecessor in the tree from his given key value.
+        :param value:
+        :return:
+        """
         current = self.search(value)
         if not current:
             return False
-        elif current.left != self.leaf:
+        elif current.left.key:
             node = self.maximum(current.left)
             return node
 
@@ -136,6 +184,10 @@ class BinaryTree:
         return node
 
     def remove(self, value):
+        """
+        Remove node where key is equal of given value.
+        :param value: numeric
+        """
         node = self.search(value)
         if not node:
             return False
@@ -154,6 +206,11 @@ class BinaryTree:
         return True
 
     def _remove_if_leaf(self, node):
+        """
+        Remove given node where node is a leaf.
+        :param node:
+        :return:
+        """
         if node.parent.left == node:
             node.parent.left = self.leaf
         else:
@@ -175,6 +232,11 @@ class BinaryTree:
         node.right.parent = node.parent
 
     def _remove_if_two_childs(self, node):
+        """
+        Remove given node where if node have only one child.
+        :param node:
+        :return:
+        """
         successor = self.successor(node.key)
 
         if successor == node.right:
@@ -201,6 +263,11 @@ class BinaryTree:
             successor.parent = node.parent
 
     def _remove_root(self, node):
+        """
+        Remove given node where node has two children.
+        :param node:
+        :return:
+        """
         if node.left == self.leaf and node.right == self.leaf:
             self.root = None
         elif (node.left == self.leaf) ^ (node.right == self.leaf):
